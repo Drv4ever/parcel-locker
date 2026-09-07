@@ -1,214 +1,533 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hostel Parcel Management — Warden Dashboard</title>
+  <title>Hostel Digital Locker - Warden Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --success: #16a34a;
-      --warning: #ca8a04;
-      --danger: #dc2626;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --accent: #06b6d4;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-border: #334155;
+      --surface-hover: #24344d;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.12);
+      --info: #38bdf8;
+      --info-bg: rgba(56, 189, 248, 0.12);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 24px;
+      padding: 0;
     }
-    .header {
-      max-width: 1100px;
-      margin: 0 auto 24px auto;
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 32px 24px;
+      line-height: 1.5;
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Top Bar */
+    .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 16px;
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 28px;
+      margin-bottom: 28px;
     }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+
+    .brand-title h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .brand-title p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--success);
+      background: var(--success-bg);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 6px 14px;
+      border-radius: 9999px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Grid Layout */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      transition: border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: #475569;
+    }
+
+    .card-header {
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .card-header h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .badge {
-      background: #dbeafe;
-      color: #1e40af;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      font-weight: 600;
+
+    .card-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
     }
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .card h2 {
-      margin-top: 0;
-      font-size: 18px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
+
+    /* Forms */
+    .form-field {
       margin-bottom: 16px;
     }
-    .form-group {
-      margin-bottom: 14px;
-    }
+
     label {
       display: block;
       font-size: 13px;
       font-weight: 600;
+      color: #cbd5e1;
       margin-bottom: 6px;
-      color: var(--muted);
     }
-    input[type="text"], input[type="file"] {
+
+    input[type="text"],
+    input[type="file"] {
       width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      background: #0f172a;
+      border: 1px solid var(--surface-border);
+      color: #f8fafc;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
       font-size: 14px;
-      box-sizing: border-box;
+      font-family: inherit;
+      transition: all 0.2s;
     }
-    button {
-      background-color: var(--primary);
-      color: white;
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+    }
+
+    input[type="file"] {
+      padding: 9px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: #334155;
+      color: #ffffff;
       border: none;
-      padding: 10px 18px;
-      border-radius: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 12px;
+      transition: background 0.2s;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: #475569;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: var(--radius-md);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      width: 100%;
+      font-family: inherit;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      transition: all 0.2s;
     }
-    button:hover {
-      background-color: var(--primary-hover);
+
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
     }
-    .full-width {
-      grid-column: 1 / -1;
+
+    .btn-pickup {
+      background: linear-gradient(135deg, #059669, #10b981);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     }
-    table {
+
+    .btn-pickup:hover {
+      background: linear-gradient(135deg, #047857, #059669);
+    }
+
+    /* Alerts */
+    .alert-banner {
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert-success {
+      background: var(--success-bg);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    /* Table */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .table-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .table-header-bar h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .refresh-btn {
+      background: #334155;
+      color: #e2e8f0;
+      border: 1px solid var(--surface-border);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: #475569;
+      color: #ffffff;
+    }
+
+    .data-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
       text-align: left;
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
     }
-    th {
-      background: #f1f5f9;
-      color: var(--muted);
+
+    .data-table th {
+      background: #0f172a;
+      color: var(--text-muted);
+      font-size: 12px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--surface-border);
     }
-    .status-pill {
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+      font-size: 14px;
+      color: #e2e8f0;
+      vertical-align: middle;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(51, 65, 85, 0.2);
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #0f172a;
+      color: #38bdf8;
       padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+
+    /* Badges */
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
       border-radius: 9999px;
       font-size: 11px;
       font-weight: 600;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      display: inline-block;
     }
-    .status-notified { background: #dcfce7; color: var(--success); }
-    .status-pending_notification { background: #fef9c3; color: var(--warning); }
-    .status-picked_up { background: #e0e7ff; color: #4338ca; }
-    .status-FAILED_TO_NOTIFY { background: #fee2e2; color: var(--danger); }
-    .status-reminder_sent { background: #ffedd5; color: #c2410c; }
-    .status-escalated { background: #fce7f3; color: #be185d; }
-    .alert {
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 16px;
-      font-size: 14px;
+
+    .badge-notified {
+      background: var(--info-bg);
+      color: var(--info);
+      border: 1px solid rgba(56, 189, 248, 0.3);
     }
-    .alert-success { background: #dcfce7; color: #166534; }
+
+    .badge-picked_up {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-pending_notification {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-FAILED_TO_NOTIFY {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-reminder_sent {
+      background: rgba(251, 146, 60, 0.12);
+      color: #fb923c;
+      border: 1px solid rgba(251, 146, 60, 0.3);
+    }
+
+    .badge-escalated {
+      background: rgba(244, 114, 182, 0.12);
+      color: #f472b6;
+      border: 1px solid rgba(244, 114, 182, 0.3);
+    }
+
+    .action-btn {
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #047857;
+    }
+
+    .completed-text {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>📦 Hostel Parcel Management <span class="badge">AWS Event-Driven</span></h1>
-    <div>Region: <strong>ap-south-1</strong></div>
-  </div>
-
-  <div class="container">
-    <div id="alertBox" class="full-width" style="display:none;"></div>
-
-    <!-- Log Parcel Card -->
-    <div class="card">
-      <h2>📥 Log Incoming Courier Parcel</h2>
-      <form action="/log-parcel" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="studentId">Student Reg No / ID</label>
-          <input type="text" id="studentId" name="studentId" placeholder="e.g. 24BIT0379" required />
+  <div class="wrapper">
+    <!-- Navbar Header -->
+    <header class="navbar">
+      <div class="brand-title">
+        <div class="brand-logo">📦</div>
+        <div>
+          <h1>Hostel Digital Locker</h1>
+          <p>Automated Parcel Management & Student Notification Portal</p>
         </div>
-        <div class="form-group">
-          <label for="courierName">Courier Name</label>
-          <input type="text" id="courierName" name="courierName" placeholder="e.g. Amazon, Flipkart, BlueDart" required />
-        </div>
-        <div class="form-group">
-          <label for="photo">Parcel Photo (Stored in S3)</label>
-          <input type="file" id="photo" name="photo" accept="image/*" />
-        </div>
-        <button type="submit">Register Parcel & Notify Student</button>
-      </form>
-    </div>
-
-    <!-- Scan Pickup Card -->
-    <div class="card">
-      <h2>📤 Student Parcel Pickup</h2>
-      <form action="/scan-pickup" method="POST">
-        <div class="form-group">
-          <label for="parcelId">Parcel ID (or Pickup QR Code / UUID)</label>
-          <input type="text" id="parcelId" name="parcelId" placeholder="Paste Parcel UUID here" required />
-        </div>
-        <button type="submit" style="background-color: #059669;">Confirm Student Pickup</button>
-      </form>
-      <p style="font-size: 12px; color: var(--muted); margin-top: 14px;">
-        💡 When student arrives, match the QR code or ID from their notification email and confirm pickup to transition state in DynamoDB.
-      </p>
-    </div>
-
-    <!-- Real-time Status Table -->
-    <div class="card full-width">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>📋 Live Parcel State Lifecycle (DynamoDB)</h2>
-        <button onclick="loadStatus()" style="width: auto; padding: 6px 14px; font-size: 12px;">🔄 Refresh</button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Parcel ID</th>
-            <th>Student ID</th>
-            <th>Courier</th>
-            <th>Status</th>
-            <th>Pickup Token</th>
-            <th>Logged At</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="statusTableBody">
-          <tr><td colspan="7">Loading parcels...</td></tr>
-        </tbody>
-      </table>
+      <div class="system-status">
+        <span class="status-dot"></span>
+        <span>System Operational</span>
+      </div>
+    </header>
+
+    <!-- Alert Notification -->
+    <div id="alertBox" style="display: none;"></div>
+
+    <!-- Top Action Cards -->
+    <div class="grid-container">
+      <!-- Register Parcel -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Register Incoming Delivery</h2>
+          <p>Enter parcel details to log item and dispatch student notification</p>
+        </div>
+        <form action="/log-parcel" method="POST" enctype="multipart/form-data">
+          <div class="form-field">
+            <label for="studentId">Student Registration Number</label>
+            <input type="text" id="studentId" name="studentId" placeholder="e.g. 24BIT0379" required />
+          </div>
+          <div class="form-field">
+            <label for="courierName">Courier Partner</label>
+            <input type="text" id="courierName" name="courierName" placeholder="e.g. Amazon, BlueDart, Flipkart" required />
+          </div>
+          <div class="form-field">
+            <label for="photo">Parcel Photo (Optional)</label>
+            <input type="file" id="photo" name="photo" accept="image/*" />
+          </div>
+          <button type="submit" class="btn">Register & Notify Student</button>
+        </form>
+      </div>
+
+      <!-- Confirm Pickup -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Student Parcel Pickup</h2>
+          <p>Confirm collection upon verification of student ID and pickup code</p>
+        </div>
+        <form action="/scan-pickup" method="POST">
+          <div class="form-field">
+            <label for="parcelId">Parcel ID or Tracking UUID</label>
+            <input type="text" id="parcelId" name="parcelId" placeholder="Paste parcel UUID here" required />
+          </div>
+          <button type="submit" class="btn btn-pickup">Confirm Parcel Pickup</button>
+        </form>
+        <div style="margin-top: 24px; padding: 16px; background: rgba(15, 23, 42, 0.6); border-radius: var(--radius-md); border: 1px solid var(--surface-border);">
+          <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+            💡 <strong>Verification Tip:</strong> Request the unique pickup code from the student's notification before handing over the parcel. Click <strong>Pickup</strong> in the table below for quick one-click confirmation.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Parcels Table -->
+    <div class="table-container">
+      <div class="table-header-bar">
+        <h2>Live Parcel Records</h2>
+        <button onclick="loadStatus()" class="refresh-btn">
+          <span>Refresh</span>
+        </button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Parcel ID</th>
+              <th>Student ID</th>
+              <th>Courier Partner</th>
+              <th>Current Status</th>
+              <th>Pickup Code</th>
+              <th>Arrival Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="statusTableBody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">Loading parcels...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -216,13 +535,13 @@
     const urlParams = new URLSearchParams(window.location.search);
     const alertBox = document.getElementById('alertBox');
     if (urlParams.get('logged')) {
-      alertBox.className = 'alert alert-success full-width';
-      alertBox.innerText = '✅ Parcel logged successfully! Student notified & audit record written to S3.';
-      alertBox.style.display = 'block';
+      alertBox.className = 'alert-banner alert-success';
+      alertBox.innerHTML = '<span>Parcel registered successfully. Student notification dispatched and audit record saved.</span>';
+      alertBox.style.display = 'flex';
     } else if (urlParams.get('picked')) {
-      alertBox.className = 'alert alert-success full-width';
-      alertBox.innerText = '✅ Parcel marked as PICKED UP successfully!';
-      alertBox.style.display = 'block';
+      alertBox.className = 'alert-banner alert-success';
+      alertBox.innerHTML = '<span>Parcel marked as PICKED UP successfully.</span>';
+      alertBox.style.display = 'flex';
     }
 
     async function loadStatus() {
@@ -231,24 +550,26 @@
         const items = await res.json();
         const tbody = document.getElementById('statusTableBody');
         if (!items || items.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7">No parcels logged yet.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">No parcel records found.</td></tr>';
           return;
         }
         tbody.innerHTML = items.map(p => {
-          const statusClass = 'status-' + (p.status || 'notified');
+          const statusKey = p.status || 'notified';
+          const badgeClass = 'badge-' + statusKey;
+          const readableStatus = statusKey.replace(/_/g, ' ');
           const dateStr = p.createdAt ? new Date(Number(p.createdAt)).toLocaleString() : 'N/A';
           return `
             <tr>
               <td><code>${p.parcelId || ''}</code></td>
-              <td><strong>${p.studentId || ''}</strong></td>
-              <td>${p.courierName || 'N/A'}</td>
-              <td><span class="status-pill ${statusClass}">${p.status || ''}</span></td>
+              <td style="font-weight: 600; color: #f1f5f9;">${p.studentId || ''}</td>
+              <td>${p.courierName || 'Standard Delivery'}</td>
+              <td><span class="badge-status ${badgeClass}">${readableStatus}</span></td>
               <td><code>${p.qrCode || ''}</code></td>
-              <td>${dateStr}</td>
+              <td style="color: var(--text-muted); font-size: 13px;">${dateStr}</td>
               <td>
                 ${p.status !== 'picked_up' ? 
-                  `<button onclick="pickupParcel('${p.parcelId}')" style="background:#059669; padding:4px 8px; font-size:11px; width:auto;">Pickup</button>` : 
-                  '<span>Completed</span>'}
+                  `<button onclick="pickupParcel('${p.parcelId}')" class="action-btn">Pickup</button>` : 
+                  '<span class="completed-text">Collected</span>'}
               </td>
             </tr>
           `;
@@ -259,7 +580,7 @@
     }
 
     async function pickupParcel(parcelId) {
-      if (confirm('Mark parcel ' + parcelId + ' as picked up?')) {
+      if (confirm('Confirm collection for parcel: ' + parcelId + '?')) {
         await fetch('/scan-pickup', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -270,7 +591,7 @@
     }
 
     loadStatus();
-    setInterval(loadStatus, 10000); // Auto-refresh every 10s
+    setInterval(loadStatus, 8000);
   </script>
 </body>
 </html>
