@@ -1,0 +1,26 @@
+﻿# Dependencies
+node_modules/
+package-lock.json
+
+# Environment and sensitive data
+.env
+.env.*
+*.pem
+*.key
+
+# Build and temp files
+*.zip
+tmp/
+dist/
+build/
+response.json
+auditor_resp.json
+fail_resp.json
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# IDE and tooling
+.vscode/
+.idea/

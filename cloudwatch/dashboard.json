@@ -1,0 +1,59 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "ParcelSystem", "ParcelsLogged", { "stat": "Sum", "label": "Parcels Logged (Count)" } ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "ap-south-1",
+        "title": "Parcel Ingestion Rate (ParcelsLogged)",
+        "period": 300
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", "parcel-dlq", { "stat": "Maximum", "label": "DLQ Visible Messages" } ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "ap-south-1",
+        "title": "Dead-Letter Queue Message Count",
+        "period": 300
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 6,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "AWS/Lambda", "Invocations", "FunctionName", "parcel-core-logic", { "stat": "Sum" } ],
+          [ "...", "parcel-student-notify", { "stat": "Sum" } ],
+          [ "...", "parcel-analytics", { "stat": "Sum" } ],
+          [ "...", "parcel-audit", { "stat": "Sum" } ],
+          [ "...", "parcel-state-auditor", { "stat": "Sum" } ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "ap-south-1",
+        "title": "Lambda Invocations Across Parcel System",
+        "period": 300
+      }
+    }
+  ]
+}

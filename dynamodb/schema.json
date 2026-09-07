@@ -1,0 +1,22 @@
+{
+  "TableName": "ParcelTable",
+  "AttributeDefinitions": [
+    { "AttributeName": "parcelId", "AttributeType": "S" },
+    { "AttributeName": "status", "AttributeType": "S" }
+  ],
+  "KeySchema": [
+    { "AttributeName": "parcelId", "KeyType": "HASH" }
+  ],
+  "BillingMode": "PAY_PER_REQUEST",
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "status-index",
+      "KeySchema": [
+        { "AttributeName": "status", "KeyType": "HASH" }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      }
+    }
+  ]
+}

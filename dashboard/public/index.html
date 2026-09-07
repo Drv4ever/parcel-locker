@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Parcel Management — Warden Dashboard</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --warning: #ca8a04;
+      --danger: #dc2626;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 24px;
+    }
+    .header {
+      max-width: 1100px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      background: #dbeafe;
+      color: #1e40af;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .status-pill {
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .status-notified { background: #dcfce7; color: var(--success); }
+    .status-pending_notification { background: #fef9c3; color: var(--warning); }
+    .status-picked_up { background: #e0e7ff; color: #4338ca; }
+    .status-FAILED_TO_NOTIFY { background: #fee2e2; color: var(--danger); }
+    .status-reminder_sent { background: #ffedd5; color: #c2410c; }
+    .status-escalated { background: #fce7f3; color: #be185d; }
+    .alert {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .alert-success { background: #dcfce7; color: #166534; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📦 Hostel Parcel Management <span class="badge">AWS Event-Driven</span></h1>
+    <div>Region: <strong>ap-south-1</strong></div>
+  </div>
+
+  <div class="container">
+    <div id="alertBox" class="full-width" style="display:none;"></div>
+
+    <!-- Log Parcel Card -->
+    <div class="card">
+      <h2>📥 Log Incoming Courier Parcel</h2>
+      <form action="/log-parcel" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="studentId">Student Reg No / ID</label>
+          <input type="text" id="studentId" name="studentId" placeholder="e.g. 24BIT0379" required />
+        </div>
+        <div class="form-group">
+          <label for="courierName">Courier Name</label>
+          <input type="text" id="courierName" name="courierName" placeholder="e.g. Amazon, Flipkart, BlueDart" required />
+        </div>
+        <div class="form-group">
+          <label for="photo">Parcel Photo (Stored in S3)</label>
+          <input type="file" id="photo" name="photo" accept="image/*" />
+        </div>
+        <button type="submit">Register Parcel & Notify Student</button>
+      </form>
+    </div>
+
+    <!-- Scan Pickup Card -->
+    <div class="card">
+      <h2>📤 Student Parcel Pickup</h2>
+      <form action="/scan-pickup" method="POST">
+        <div class="form-group">
+          <label for="parcelId">Parcel ID (or Pickup QR Code / UUID)</label>
+          <input type="text" id="parcelId" name="parcelId" placeholder="Paste Parcel UUID here" required />
+        </div>
+        <button type="submit" style="background-color: #059669;">Confirm Student Pickup</button>
+      </form>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 14px;">
+        💡 When student arrives, match the QR code or ID from their notification email and confirm pickup to transition state in DynamoDB.
+      </p>
+    </div>
+
+    <!-- Real-time Status Table -->
+    <div class="card full-width">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>📋 Live Parcel State Lifecycle (DynamoDB)</h2>
+        <button onclick="loadStatus()" style="width: auto; padding: 6px 14px; font-size: 12px;">🔄 Refresh</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Parcel ID</th>
+            <th>Student ID</th>
+            <th>Courier</th>
+            <th>Status</th>
+            <th>Pickup Token</th>
+            <th>Logged At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="statusTableBody">
+          <tr><td colspan="7">Loading parcels...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const alertBox = document.getElementById('alertBox');
+    if (urlParams.get('logged')) {
+      alertBox.className = 'alert alert-success full-width';
+      alertBox.innerText = '✅ Parcel logged successfully! Student notified & audit record written to S3.';
+      alertBox.style.display = 'block';
+    } else if (urlParams.get('picked')) {
+      alertBox.className = 'alert alert-success full-width';
+      alertBox.innerText = '✅ Parcel marked as PICKED UP successfully!';
+      alertBox.style.display = 'block';
+    }
+
+    async function loadStatus() {
+      try {
+        const res = await fetch('/status');
+        const items = await res.json();
+        const tbody = document.getElementById('statusTableBody');
+        if (!items || items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7">No parcels logged yet.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = items.map(p => {
+          const statusClass = 'status-' + (p.status || 'notified');
+          const dateStr = p.createdAt ? new Date(Number(p.createdAt)).toLocaleString() : 'N/A';
+          return `
+            <tr>
+              <td><code>${p.parcelId || ''}</code></td>
+              <td><strong>${p.studentId || ''}</strong></td>
+              <td>${p.courierName || 'N/A'}</td>
+              <td><span class="status-pill ${statusClass}">${p.status || ''}</span></td>
+              <td><code>${p.qrCode || ''}</code></td>
+              <td>${dateStr}</td>
+              <td>
+                ${p.status !== 'picked_up' ? 
+                  `<button onclick="pickupParcel('${p.parcelId}')" style="background:#059669; padding:4px 8px; font-size:11px; width:auto;">Pickup</button>` : 
+                  '<span>Completed</span>'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Failed to load status:', err);
+      }
+    }
+
+    async function pickupParcel(parcelId) {
+      if (confirm('Mark parcel ' + parcelId + ' as picked up?')) {
+        await fetch('/scan-pickup', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ parcelId })
+        });
+        window.location.href = '/?picked=1';
+      }
+    }
+
+    loadStatus();
+    setInterval(loadStatus, 10000); // Auto-refresh every 10s
+  </script>
+</body>
+</html>
